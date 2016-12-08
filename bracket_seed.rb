@@ -1,16 +1,5 @@
-@team_seeds = []
+@team_seeds = {}
 @message = ""
-
-
-class Team
-  attr_accessor :seed
-  attr_accessor :school	
-
-  def initialize(seed, school)
-    @seed = seed
-    @school = school	 	
-  end
-end
 
 
 def display_menu clear_menu
@@ -25,6 +14,7 @@ def display_menu clear_menu
   puts "**** 1. Enter teams"
   puts "**** 2. List teams"
   puts "**** 3. List matchups"
+  puts "**** 4. Clear bracket"
   puts "**** 0. Exit program"
  
   status_message(@message)
@@ -36,6 +26,7 @@ def display_menu clear_menu
     when 1 then add_team
     when 2 then list_teams
     when 3 then matchups
+    when 4 then clear_bracket
     when 0 then exit_application
     else
      @message = "Invalid Selection: please choose from menu"
@@ -67,11 +58,10 @@ def add_team
   puts "Enter school name (eg. UGA):"
   school = gets.chomp
   puts "Enter ranking:"
-  seed = gets.chomp
+  seed = gets.chomp.to_i
   
-  team = Team.new(seed, school)
-  @team_seeds.push(team)
-  @team_seeds.sort! {|a,b| a.seed <=> b.seed }
+  @team_seeds[seed] = school
+  @team_seeds = @team_seeds.sort_by{ |k, v| k }.to_h
 
   @message = "Team Added"
   
@@ -82,8 +72,8 @@ end
 def list_teams
   system "clear"
   puts "The #{@team_seeds.length} teams are seeded as follows:"
-  @team_seeds.each do |team|
-    puts "#{team.seed}. #{team.school}"
+  @team_seeds.each do |seed, school|
+    puts "#{seed}. #{school}"
   end
   ret_menu
 end
@@ -101,7 +91,7 @@ def matchups
     bye = 1
     top_seed = 2
     middle = (@team_seeds.length-1)/2
-    second_tier = middle + 1
+    second_tier = middle + 2
   end
 
   puts "Matchups are as follows:"
@@ -111,10 +101,15 @@ def matchups
       puts "(#{bye})#{@team_seeds[bye]} bye week first round"
     end
 
-    puts "(#{top_seed})#{@team_seeds[1]} against (#{bottom_seed})#{@team_seeds[2]}"
+    puts "(#{top_seed})#{@team_seeds[top_seed]} against (#{bottom_seed})#{@team_seeds[bottom_seed]}"
     top_seed += 1
     bottom_seed -= 1
   end
+  ret_menu
+end
+
+def clear_bracket
+  @team_seeds = {}
   ret_menu
 end
 
