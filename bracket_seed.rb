@@ -97,7 +97,7 @@ def matchups
   puts "Matchups are as follows:"
 
   while top_seed < second_tier do
-    if bye == 1
+    if bye == 1 && top_seed == 2
       puts "(#{bye})#{@team_seeds[bye]} bye week first round"
     end
 
